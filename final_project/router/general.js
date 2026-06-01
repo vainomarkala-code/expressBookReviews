@@ -6,8 +6,32 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req, res) => {
-    //Write your code here
-    return res.status(300).json({ message: "Yet to be implemented" });
+    const username = req.body.username;
+    const password = req.body.password;
+
+    // Check missing fields
+    if (!username || !password) {
+        return res.status(400).json({
+            message: "Username and password are required"
+        });
+    }
+
+    // Check if user already exists
+    if (users[username]) {
+        return res.status(409).json({
+            message: "User already exists!"
+        });
+    }
+
+    // Register user
+    users[username] = {
+        password: password
+    };
+
+    return res.status(201).json({
+        message: "User successfully registered. Now you can login"
+    });
+
 });
 
 // Get the book list available in the shop
@@ -37,19 +61,38 @@ public_users.get('/author/:author', function (req, res) {
         }
     });
 
-    return res.status(300).json({result});
+    return res.status(300).json({ result });
 });
 
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
     //Write your code here
-    return res.status(300).json({ message: "Yet to be implemented" });
+    const title = req.params.title;
+    const result = {};
+
+    Object.keys(books).forEach(key => {
+        if (books[key].title === title) {
+            result[key] = books[key];
+        }
+    });
+
+    return res.status(300).json({ result });
 });
 
 //  Get book review
 public_users.get('/review/:isbn', function (req, res) {
     //Write your code here
-    return res.status(300).json({ message: "Yet to be implemented" });
+    const isbn = req.params.isbn;
+
+    if (books[isbn]) {
+        return res.status(200).json({
+            reviews: books[isbn].reviews
+        });
+    } else {
+        return res.status(404).json({ message: "Book not found" });
+    }
+
+
 });
 
 module.exports.general = public_users;
