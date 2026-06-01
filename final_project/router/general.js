@@ -36,12 +36,15 @@ public_users.post("/register", (req, res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/', async function (req, res) {
+
+public_users.get('/isbn/:isbn', async function (req, res) {
+    const isbn = req.params.isbn;
+
     try {
-        const response = await axios.get("http://localhost:5001/");
+        const response = await axios.get(`http://localhost:5001/isbn/${isbn}`);
         return res.status(200).json(response.data);
     } catch (error) {
-        return res.status(500).json({ message: "Error fetching books" });
+        return res.status(500).json({ message: "Error fetching book details" });
     }
 });
 
